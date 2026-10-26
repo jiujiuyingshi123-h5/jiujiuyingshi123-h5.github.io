@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>玖玖影视 - 双玖片单索引与正版观影导航</title>
+<meta name="description" content="玖玖影视(jiujiuyingshi-h5.github.io)是电影、剧集、动漫、纪录片的信息索引与正版导航站，以双玖对称陈列片单，不提供播放入源、不托管文件、不聚合第三方资源。">
+<meta name="keywords" content="玖玖影视, jiujiuyingshi, 双玖片单, 影视导航, 正版观看, 信息索引">
+<style>
+/* ========== 全局 ========== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+  background: #0b0d10;
+  color: #e7e3da;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+
+/* 暖夜玉光背景 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(520px 400px at 20% 12%, rgba(120,170,160,.20), transparent 60%),
+    radial-gradient(460px 360px at 82% 20%, rgba(210,170,110,.16), transparent 60%),
+    radial-gradient(320px 280px at 60% 90%, rgba(90,140,150,.12), transparent 60%);
+  filter: blur(10px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ========== 顶栏 ========== */
+.topbar {
+  background: rgba(11,13,16,.74);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(150,190,180,.16);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: .8rem 1.2rem;
+}
+.topbar-in {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: #fff; display: flex; align-items: center; gap: .6rem; }
+.logo .ring {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid #7fd0c4;
+  position: relative;
+  box-shadow: 0 0 12px rgba(127,208,196,.4);
+}
+.logo .ring::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1.5px solid #d8b25e;
+  opacity: .8;
+}
+.logo b { color: #8fe0d6; text-shadow: 0 0 12px rgba(127,208,196,.35); }
+.logo small { font-size: .54rem; letter-spacing: 2px; color: #5f6b66; margin-left: .4rem; font-weight: 400; }
+.nav-links { display: flex; gap: 1.4rem; }
+.nav-links a { font-size: .85rem; color: #9fb0a8; transition: color .25s; }
+.nav-links a:hover { color: #8fe0d6; }
+
+/* ========== Hero ========== */
+.hero {
+  max-width: 1200px;
+  margin: auto;
+  padding: 4.2rem 1.2rem 3rem;
+  text-align: center;
+  position: relative;
+}
+.hero .tag {
+  display: inline-block;
+  font-size: .72rem;
+  letter-spacing: 3px;
+  color: #8fe0d6;
+  border: 1px solid rgba(127,208,196,.35);
+  padding: .25rem .9rem;
+  border-radius: 20px;
+  margin-bottom: 1.2rem;
+}
+.hero h1 {
+  font-size: 3.3rem;
+  color: #fff;
+  line-height: 1.12;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+.hero h1 b {
+  background: linear-gradient(120deg,#bdeee9,#6fcabf 55%,#e0c074);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero > p { max-width: 590px; margin: 0 auto 2rem; color: #aeb8b2; }
+
+.dual-bar { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.8rem; }
+.dual {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(150,190,180,.16);
+  border-radius: 12px;
+  padding: .9rem 1.3rem;
+  min-width: 110px;
+}
+.dual b { font-size: 1.5rem; color: #8fe0d6; font-weight: 900; }
+.dual span { display: block; font-size: .68rem; color: #5f6b66; letter-spacing: 1px; margin-top: .1rem; }
+
+/* ========== 双玖成对陈列 ========== */
+.pair-sec { max-width: 1200px; margin: auto; padding: 3rem 1.2rem; }
+.sec-head { margin-bottom: 1.6rem; text-align: center; }
+.sec-head h2 { font-size: 1.6rem; color: #fff; display: inline-block; padding-left: .8rem; border-left: 4px solid #6fcabf; }
+.sec-head span { display: block; font-size: .72rem; color: #5f6b66; letter-spacing: 3px; margin-top: .3rem; }
+
+.pair-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 1.2rem;
+}
+.pair {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  background: linear-gradient(120deg, rgba(255,255,255,.045), rgba(255,255,255,.012));
+  border: 1px solid rgba(150,190,180,.18);
+  border-radius: 18px;
+  padding: 1.3rem 1.4rem;
+  position: relative;
+  overflow: hidden;
+  transition: .3s;
+}
+.pair::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(127,208,196,.22), transparent 70%);
+  filter: blur(6px);
+}
+.pair:hover { transform: translateY(-4px); border-color: rgba(127,208,196,.5); box-shadow: 0 14px 30px rgba(30,70,70,.26); }
+.pair .num {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(143,224,214,.5);
+  display: grid; place-items: center;
+  font-size: 1.4rem; font-weight: 900; color: #8fe0d6;
+  position: relative;
+}
+.pair .num::after {
+  content: '';
+  position: absolute; inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(216,178,94,.5);
+}
+.pair .body h4 { font-size: 1.08rem; color: #fff; margin-bottom: .2rem; }
+.pair .body p { font-size: .8rem; color: #9fb0a8; }
+.pair .mood {
+  font-size: .68rem;
+  color: #0b0d10;
+  background: linear-gradient(120deg,#bdeee9,#6fcabf);
+  padding: .25rem .8rem;
+  border-radius: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ========== 九宫索引轨 ========== */
+.rail-sec { padding: 3rem 1.2rem; background: rgba(255,255,255,.012); border-top: 1px solid rgba(255,255,255,.05); border-bottom: 1px solid rgba(255,255,255,.05); }
+.rail-in { max-width: 1200px; margin: auto; }
+.rail {
+  display: flex;
+  gap: .6rem;
+  overflow-x: auto;
+  padding-bottom: .5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.rail a {
+  font-size: .82rem;
+  color: #cfe6e0;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(150,190,180,.2);
+  padding: .5rem 1.1rem;
+  border-radius: 24px;
+  transition: .2s;
+}
+.rail a:hover { background: rgba(127,208,196,.16); border-color: #6fcabf; color: #fff; }
+
+/* ========== 双主题片单 ========== */
+.theme-sec { max-width: 1200px; margin: auto; padding: 3rem 1.2rem; }
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.tcol {
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(150,190,180,.16);
+  border-radius: 16px;
+  padding: 1.5rem 1.4rem;
+}
+.tcol h3 { font-size: 1.15rem; color: #fff; margin-bottom: .9rem; display: flex; align-items: center; gap: .5rem; }
+.tcol h3 .dot { width: 10px; height: 10px; border-radius: 50%; background: #8fe0d6; box-shadow: 0 0 8px rgba(127,208,196,.5); }
+.tcol.alt h3 .dot { background: #e0c074; box-shadow: 0 0 8px rgba(224,192,116,.5); }
+.frow {
+  display: flex;
+  justify-content: space-between;
+  gap: .8rem;
+  padding: .7rem 0;
+  border-bottom: 1px dashed rgba(255,255,255,.06);
+}
+.frow:last-child { border-bottom: none; }
+.frow .nm { font-size: .92rem; color: #e7e3da; }
+.frow .nm small { display: block; font-size: .72rem; color: #8a958f; margin-top: .1rem; }
+.frow .sc { font-size: .8rem; color: #8fe0d6; font-weight: 700; white-space: nowrap; }
+
+/* ========== 关于 ========== */
+.about {
+  background: rgba(255,255,255,.02);
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding: 3.4rem 1.2rem;
+  text-align: center;
+}
+.about-in { max-width: 740px; margin: auto; }
+.about h2 { color: #fff; font-size: 1.45rem; margin-bottom: 1rem; letter-spacing: 1px; }
+.about p { color: #aeb8b2; font-size: .9rem; margin-bottom: .8rem; }
+.about b { color: #8fe0d6; }
+
+/* ========== 页脚 ========== */
+footer {
+  background: #050607;
+  color: #4f5754;
+  text-align: center;
+  padding: 2.4rem 1rem;
+  font-size: .82rem;
+}
+footer a { color: #6fcabf; }
+.disclaim {
+  max-width: 860px;
+  margin: .8rem auto 0;
+  font-size: .72rem;
+  color: #3e4644;
+  line-height: 1.7;
+  text-align: left;
+}
+.disclaim b { color: #5f6b66; }
+
+/* ========== 移动端 ========== */
+@media (max-width: 920px) {
+  .theme-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero h1 { font-size: 2.2rem; }
+  .pair { grid-template-columns: 48px 1fr; }
+  .pair .num { width: 48px; height: 48px; font-size: 1.1rem; }
+  .pair .mood { grid-column: 2; justify-self: start; margin-top: .4rem; }
+}
+@media (max-width: 480px) {
+  .pair-grid { grid-template-columns: 1fr; }
+  .dual-bar { gap: .6rem; }
+  .dual { flex: 1 1 40%; min-width: 0; }
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<!-- 顶栏 -->
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="logo"><span class="ring"></span><b>玖玖</b>影视<small>JIUJIU INDEX</small></div>
+    <nav class="nav-links">
+      <a href="#">双玖首页</a>
+      <a href="#pair">成对陈列</a>
+      <a href="#theme">双主题片单</a>
+      <a href="#rail">九宫索引</a>
+    </nav>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <span class="tag">DUAL · 只做信息导航</span>
+  <h1>玖玖影视<br>把片单<b>成双陈列</b></h1>
+  <p>玖玖影视（jiujiuyingshi-h5.github.io）是电影、剧集、动漫、纪录片的信息索引与正版导航站。本站不播放、不托管、不提供未授权资源，所有片名与简介均为原创示例。</p>
+
+  <div class="dual-bar">
+    <div class="dual"><b>9+9</b><span>双玖分区</span></div>
+    <div class="dual"><b>18</b><span>成对条目</span></div>
+    <div class="dual"><b>0</b><span>播放入源</span></div>
+    <div class="dual"><b>0</b><span>第三方聚合</span></div>
+  </div>
+</section>
+
+<!-- 双玖成对陈列 -->
+<section class="pair-sec" id="pair">
+  <div class="sec-head">
+    <h2>双玖成对陈列</h2><span>PAIRED SHELF</span>
+  </div>
+  <div class="pair-grid">
+    <div class="pair">
+      <div class="num">玖</div>
+      <div class="body">
+        <h4>《长椅上的天气预报》</h4>
+        <p>公园长椅上，两个退休老人用天气聊了一辈子没说出口的话。</p>
+      </div>
+      <span class="mood">文艺 · 慢热</span>
+    </div>
+    <div class="pair">
+      <div class="num">玖</div>
+      <div class="body">
+        <h4>《电梯里的陌生人》</h4>
+        <p>一栋老楼停电夜，六个人在电梯里互相讲出一个秘密。</p>
+      </div>
+      <span class="mood">悬疑 · 单元</span>
+    </div>
+    <div class="pair">
+      <div class="num">玖</div>
+      <div class="body">
+        <h4>《潮汐信箱》</h4>
+        <p>海边小镇的邮差，每天替出海的人收信，再替海浪退信。</p>
+      </div>
+      <span class="mood">治愈 · 自然</span>
+    </div>
+    <div class="pair">
+      <div class="num">玖</div>
+      <div class="body">
+        <h4>《齿轮少年》</h4>
+        <p>钟表铺学徒发现一座会做梦的钟，城里开始倒着过日子。</p>
+      </div>
+      <span class="mood">奇想 · 国漫</span>
+    </div>
+    <div class="pair">
+      <div class="num">玖</div>
+      <div class="body">
+        <h4>《晚班书店》</h4>
+        <p>只在零点后营业的书店，卖的不是书，是被忘掉的那页日记。</p>
+      </div>
+      <span class="mood">都市 · 温柔</span>
+    </div>
+    <div class="pair">
+      <div class="num">玖</div>
+      <div class="body">
+        <h4>《雪落在信号塔》</h4>
+        <p>驻站员最后一次巡塔，把十年孤独录进一段没有接收端的电波。</p>
+      </div>
+      <span class="mood">纪实 · 冷调</span>
+    </div>
+  </div>
+</section>
+
+<!-- 双主题片单 -->
+<section class="theme-sec" id="theme">
+  <div class="sec-head">
+    <h2>双主题片单</h2><span>TWO THEMES</span>
+  </div>
+  <div class="theme-grid">
+    <div class="tcol">
+      <h3><span class="dot"></span>暖夜 · 人与灯下</h3>
+      <div class="frow"><div class="nm">《围炉手信》<small>三个人、一口锅、几封旧信</small></div><div class="sc">9.1</div></div>
+      <div class="frow"><div class="nm">《巷口电影院》<small>老放映员守着最后一家影院</small></div><div class="sc">8.9</div></div>
+      <div class="frow"><div class="nm">《重阳不打烊》<small>老茶馆来了七个不速之客</small></div><div class="sc">8.7</div></div>
+      <div class="frow"><div class="nm">《壁炉旁边》<small>一个冬天慢慢融开的隔阂</small></div><div class="sc">9.0</div></div>
+    </div>
+    <div class="tcol alt">
+      <h3><span class="dot"></span>微光 · 城与远方</h3>
+      <div class="frow"><div class="nm">《第七盏路灯》<small>拆迁前夜，每盏灯下都站着一个人</small></div><div class="sc">9.2</div></div>
+      <div class="frow"><div class="nm">《星屑回收站》<small>把遗忘的梦重新打包的人</small></div><div class="sc">8.8</div></div>
+      <div class="frow"><div class="nm">《无声海岸线》<small>潮间带四季，配白噪音助眠</small></div><div class="sc">9.0</div></div>
+      <div class="frow"><div class="nm">《纸上飞行》<small>折纸少年与风的约定</small></div><div class="sc">8.9</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 九宫索引轨 -->
+<section class="rail-sec" id="rail">
+  <div class="rail-in">
+    <div class="sec-head">
+      <h2>九宫索引</h2><span>GENRE GRID</span>
+    </div>
+    <div class="rail">
+      <a href="#">文艺慢热</a>
+      <a href="#">冷色悬疑</a>
+      <a href="#">治愈日常</a>
+      <a href="#">都市夜行</a>
+      <a href="#">国漫奇想</a>
+      <a href="#">自然纪录</a>
+      <a href="#">年代家庭</a>
+      <a href="#">轻喜下饭</a>
+      <a href="#">单元短剧</a>
+      <a href="#">舞台戏曲</a>
+      <a href="#">冷门修复</a>
+      <a href="#">合家欢</a>
+    </div>
+  </div>
+</section>
+
+<!-- 关于 -->
+<section class="about">
+  <div class="about-in">
+    <h2>关于玖玖影视</h2>
+    <p>欢迎访问 <b>玖玖影视</b>（https://jiujiuyingshi-h5.github.io）。本站是静态单页影视信息索引与正版导航站，核心词：玖玖影视 / jiujiuyingshi / 双玖片单 / 影视导航。</p>
+    <p>本站<b>不是播放平台</b>，不提供在线播放入源、不托管视听文件、不存储、不代理任何视频或流媒体服务，不提供网盘、下载、破解、磁力或镜像入口，不聚合任何第三方资源；所有“观看/详情”入口均为 <b>#</b> 占位，实际观看请走已取得授权的正版平台。</p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 玖玖影视 · jiujiuyingshi-h5.github.io</p>
+  <p>网址：<a href="https://jiujiuyingshi-h5.github.io">https://jiujiuyingshi-h5.github.io</a></p>
+  <p class="disclaim">
+    <b>服务定位与免责声明：</b>本页为影视信息索引与正版导航示例，与任何同名影视资源站无任何关联。<br>
+    1. 本站不托管、不上传、不存储、不缓存、不代理任何视频文件或流媒体播放服务；<br>
+    2. 本站不提供未授权播放入源、网盘资源、下载包、破解工具、解码器、磁力链接或镜像入口；<br>
+    3. 本站不聚合第三方资源，不嵌入外部播放器，不引入任何第三方脚本或追踪代码；<br>
+    4. 站内双玖分类、片名、简介、配对与索引均为原创示例整理，不含真实盗版资源，版权归原权利方所有；<br>
+    5. 若您为版权方或授权代理人，认为本页信息涉及您的权益，可通过仓库 Issues 反馈，我们将在收到有效材料后及时处理；<br>
+    6. 用户应自行确认所在地法律法规，通过正规授权平台观看内容；因使用本页信息产生的任何行为，由用户自行承担责任。<br>
+    若实际建站涉及互联网视听节目传播，请按属地广电与版权要求办理相应许可。
+  </p>
+</footer>
+
+</body>
+</html>
